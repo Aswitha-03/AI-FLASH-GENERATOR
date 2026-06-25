@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced AI Smart Flashcard Generator</title>
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/><path d="M13 14h3"/><path d="M6 14h2.5"/></svg>
+                <div class="logo-text">
+                    <h1>AI Smart Flashcard Generator</h1>
+                    <span class="version-tag">Advanced Edition</span>
+                </div>
+            </div>
+            
+            <div class="header-controls">
+                <button class="btn btn-secondary" onclick="logout()">
+    Logout
+</button>
+                <!-- Streak Tracker Badge -->
+                <div class="streak-badge" id="streak-container" title="Consecutive study days">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="streak-icon"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                    <span class="streak-text"><span id="current-streak">0</span> Days Streak</span>
+                </div>
+                
+                <!-- Dark Mode Toggle Button -->
+                <button id="theme-toggle" class="icon-btn" aria-label="Toggle Dark Mode">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon moon-icon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon sun-icon"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Tab Navigation -->
+        <nav class="app-nav">
+            <button class="nav-tab active" data-tab="dashboard">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                Dashboard
+            </button>
+            <button class="nav-tab" data-tab="notes">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                Generate Notes
+            </button>
+            <button class="nav-tab" data-tab="flashcards" id="tab-btn-flashcards">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                Flashcards Grid
+            </button>
+            <button class="nav-tab" data-tab="favorites" id="tab-btn-favorites">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Bookmarked (<span id="favorites-badge-count">0</span>)
+            </button>
+            <button class="nav-tab" data-tab="quiz" id="tab-btn-quiz">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                Quiz Mode
+            </button>
+        </nav>
+
+        <!-- Main Workspace -->
+        <main class="app-main">
+            
+            <!-- 1. DASHBOARD VIEW -->
+            <section id="view-dashboard" class="tab-view active">
+                <div class="dashboard-header-block">
+                    <h2>Study Analytics Dashboard</h2>
+                    <p class="subtitle">Review your progress, study streak, and tailored AI recommendations</p>
+                </div>
+                
+                <!-- Quick Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-widget card-glass">
+                        <div class="stat-widget-icon icon-blue">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                        </div>
+                        <div class="stat-widget-info">
+                            <span class="stat-title">Total Generated</span>
+                            <span id="stat-total-cards" class="stat-number">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-widget card-glass">
+                        <div class="stat-widget-icon icon-green">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                        <div class="stat-widget-info">
+                            <span class="stat-title">Cards Studied</span>
+                            <span id="stat-reviewed-cards" class="stat-number">0</span>
+                            <span class="stat-desc" id="stat-reviewed-pct">0% of deck</span>
+                        </div>
+                    </div>
+                    <div class="stat-widget card-glass">
+                        <div class="stat-widget-icon icon-gold">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </div>
+                        <div class="stat-widget-info">
+                            <span class="stat-title">Favorites</span>
+                            <span id="stat-favorites-count" class="stat-number">0</span>
+                        </div>
+                    </div>
+                    <div class="stat-widget card-glass">
+                        <div class="stat-widget-icon icon-purple">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <div class="stat-widget-info">
+                            <span class="stat-title">Quiz Performance</span>
+                            <span id="stat-quiz-accuracy" class="stat-number">0%</span>
+                            <span class="stat-desc" id="stat-quiz-attempts">0 quiz attempts</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Streak & AI Feedback Layout -->
+                <div class="dashboard-row-layout">
+                    <!-- Streak Progress details -->
+                    <div class="dash-panel card-glass flex-1">
+                        <h3>⚡ Streak &amp; Master progress</h3>
+                        
+                        <div class="streak-detail-block">
+                            <div class="fire-graphic-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="large-fire-icon"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                            </div>
+                            <div class="streak-data">
+                                <h4 id="streak-headline">Keep the Fire Burning!</h4>
+                                <p>Current Streak: <strong id="streak-days-val">0 days</strong></p>
+                                <p>All-Time Best: <span id="streak-best-val" class="badge">0 days</span></p>
+                            </div>
+                        </div>
+
+                        <hr class="panel-divider">
+
+                        <div class="progress-block-analytics">
+                            <h4>Session Review Completion</h4>
+                            <div class="stat-progress-bar-container">
+                                <div id="dashboard-progress-fill" class="stat-progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span id="dashboard-progress-txt" class="progress-details-text">No active cards generated yet.</span>
+                        </div>
+                    </div>
+
+                    <!-- AI Study Recommendations -->
+                    <div class="dash-panel card-glass flex-1">
+                        <h3>🤖 AI Study Recommendations</h3>
+                        
+                        <!-- Weak Topics badge cloud -->
+                        <div class="weak-topics-section">
+                            <h4>Identified Focus Topics:</h4>
+                            <div id="weak-topics-cloud" class="topics-cloud">
+                                <span class="placeholder-text">Complete a quiz to identify weak topics.</span>
+                            </div>
+                        </div>
+
+                        <div class="recommendation-list-wrapper">
+                            <h4>Personalized Study Tips:</h4>
+                            <ul id="recommendations-list" class="recommendations-list">
+                                <li class="tip-placeholder">Recommendations will appear once you start taking quizzes and reviewing flashcards.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 2. NOTES GENERATOR VIEW -->
+            <section id="view-notes" class="tab-view">
+                <div class="view-header">
+                    <h2>Paste Study Notes</h2>
+                    <p class="subtitle">Enter your notes below to automatically extract dynamic flashcard decks</p>
+                </div>
+                <div class="card-glass input-glass-container">
+                    <div class="panel-header">
+                        <span class="label">Text Editor</span>
+                        <button id="load-sample-btn" class="text-link-btn">Load Demo Science Notes</button>
+                    </div>
+                    <textarea id="notes-input" placeholder="Paste definitions, sentences, or explanations. E.g. 'Artificial Intelligence is...' or 'Neurons are defined as...'"></textarea>
+                    
+                    <div class="action-footer">
+                        <button id="generate-btn" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="btn-icon"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/><path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5Z"/><path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z"/></svg>
+                            Generate Flashcards
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 3. FLASHCARDS GRID VIEW -->
+            <section id="view-flashcards" class="tab-view">
+                <div class="view-header">
+                    <div class="view-title-row">
+                        <h2>Study Flashcards</h2>
+                        <div class="action-buttons-row">
+                            <button id="download-json-btn" class="btn btn-secondary" disabled>JSON</button>
+                            <button id="print-pdf-btn" class="btn btn-secondary" disabled>PDF Print</button>
+                        </div>
+                    </div>
+                    <p class="subtitle">Click on any card to flip it and read the answer. Use speech tools to play voice audio.</p>
+                </div>
+                
+                <!-- Advanced Filtering Controls -->
+                <div class="filter-controls-card card-glass">
+                    <div class="search-input-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <input type="text" id="search-input" placeholder="Search keywords in questions or answers...">
+                        <button id="clear-search-btn" class="clear-btn">&times;</button>
+                    </div>
+                    
+                    <div class="select-filters-row">
+                        <div class="filter-group">
+                            <label for="filter-difficulty">Difficulty</label>
+                            <select id="filter-difficulty">
+                                <option value="all">All Difficulties</option>
+                                <option value="Easy">Easy</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Hard">Hard</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-reviewed">Status</label>
+                            <select id="filter-reviewed">
+                                <option value="all">All Cards</option>
+                                <option value="reviewed">Reviewed</option>
+                                <option value="unreviewed">Not Reviewed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="display-container-section">
+                    <!-- Loading Spinner -->
+                    <div id="loading-spinner" class="loading-spinner hidden">
+                        <div class="spinner"></div>
+                        <p>Processing with AI NLP engine...</p>
+                    </div>
+
+                    <!-- Error Alert -->
+                    <div id="error-message" class="error-message hidden">
+                        <h3>Oops, server error!</h3>
+                        <p id="error-text">Unable to generate. Check that your backend Flask server is running at http://127.0.0.1:5000.</p>
+                    </div>
+
+                    <!-- Empty Placeholder -->
+                    <div id="grid-empty-state" class="empty-state">
+                        <div class="empty-illustration">📇</div>
+                        <h3>No Flashcards Available</h3>
+                        <p>Use the "Generate Notes" tab to parse notes and generate some study cards first.</p>
+                    </div>
+
+                    <!-- Cards Display Grid -->
+                    <div id="cards-grid" class="cards-grid hidden"></div>
+                </div>
+            </section>
+            
+            <!-- 4. FAVORITES VIEW -->
+            <section id="view-favorites" class="tab-view">
+                <div class="view-header">
+                    <h2>Bookmarked Flashcards</h2>
+                    <p class="subtitle">Access your bookmarked study cards for focused revision sessions</p>
+                </div>
+                
+                <div class="display-container-section">
+                    <!-- Empty Placeholder -->
+                    <div id="favorites-empty-state" class="empty-state">
+                        <div class="empty-illustration">⭐</div>
+                        <h3>No Bookmarks Set</h3>
+                        <p>Click the star icon at the top corner of any flashcard during your study sessions to save it here.</p>
+                    </div>
+                    
+                    <!-- Bookmarks Grid -->
+                    <div id="favorites-grid" class="cards-grid hidden"></div>
+                </div>
+            </section>
+            
+            <!-- 5. QUIZ MODE VIEW -->
+            <section id="view-quiz" class="tab-view">
+                <div class="view-header">
+                    <h2>Interactive Practice Quiz</h2>
+                    <p class="subtitle">Test your knowledge with multiple-choice questions dynamically generated from your study notes</p>
+                </div>
+
+                <div class="card-glass quiz-container-box">
+                    
+                    <!-- Quiz Start Setup Screen -->
+                    <div id="quiz-setup-screen" class="quiz-screen">
+                        <div class="quiz-intro-graphic">📝</div>
+                        <h3>Ready to test yourself?</h3>
+                        <p>We will generate a quiz based on your currently loaded deck. Each card is turned into a 4-option question.</p>
+                        <button id="start-quiz-btn" class="btn btn-primary" style="max-width: 250px; margin: 20px auto 0;">Start Quiz Session</button>
+                    </div>
+
+                    <!-- Quiz Active Question Screen -->
+                    <div id="quiz-active-screen" class="quiz-screen hidden">
+                        <div class="quiz-progress-header">
+                            <span id="quiz-progress-text">Question 1 of 5</span>
+                            <span id="quiz-difficulty-badge" class="badge">Medium</span>
+                        </div>
+                        <div class="stat-progress-bar-container">
+                            <div id="quiz-progress-fill" class="stat-progress-fill" style="width: 20%"></div>
+                        </div>
+
+                        <!-- Question Text -->
+                        <div class="quiz-question-box">
+                            <p id="quiz-question-text">Question question goes here?</p>
+                        </div>
+
+                        <!-- 4 Options Grid -->
+                        <div class="quiz-options-list" id="quiz-options-list">
+                            <!-- Buttons will be generated in script.js -->
+                        </div>
+
+                        <!-- Feedback banner -->
+                        <div id="quiz-feedback-banner" class="quiz-feedback hidden">
+                            <div class="feedback-icon" id="quiz-feedback-icon">✓</div>
+                            <div class="feedback-text" id="quiz-feedback-text">Correct answer!</div>
+                        </div>
+
+                        <div class="quiz-footer-actions">
+                            <button id="quiz-next-btn" class="btn btn-primary" disabled>Next Question</button>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Result/Summary Screen -->
+                    <div id="quiz-result-screen" class="quiz-screen hidden">
+                        <div class="result-graphic" id="quiz-result-icon">🏆</div>
+                        <h3 id="quiz-result-headline">Quiz Completed!</h3>
+                        
+                        <div class="result-score-block">
+                            <span class="score-label">Your Score</span>
+                            <span id="quiz-result-score" class="score-number">0 / 0</span>
+                            <span id="quiz-result-percentage" class="score-percentage">0% Accuracy</span>
+                        </div>
+
+                        <hr class="panel-divider">
+
+                        <!-- Review of quiz mistakes -->
+                        <div class="quiz-review-section">
+                            <h4>Session Review Analysis</h4>
+                            <div id="quiz-review-list" class="review-list">
+                                <!-- list of wrong and correct items -->
+                            </div>
+                        </div>
+
+                        <div class="result-actions-footer">
+                            <button id="quiz-restart-btn" class="btn btn-secondary">Try Again</button>
+                            <button id="quiz-dashboard-btn" class="btn btn-primary">View AI Insights</button>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Advanced AI Smart Flashcard Generator &copy; 2026. Made with Flask, NLTK, &amp; Web Speech API.</p>
+        </footer>
+    </div>
+
+    <!-- Global Toast Notifications -->
+    <div id="toast" class="toast hidden">
+        <span id="toast-message">Notification details</span>
+    </div>
+
+    <!-- Dynamic JS Client -->
+<script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+     <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+<div class="auth-container">
+
+    <div class="auth-logo">
+        <h2>📚 AI Smart Flashcard Generator</h2>
+        <p>Login to continue your learning journey 🚀</p>
+    </div>
+
+<form id="loginForm">
+    <input type="email" id="email" placeholder="Email" required>
+    <br><br>
+
+    <div class="password-box">
+    <input type="password" id="password" placeholder="Password" required>
+    <span id="togglePass">👁️</span>
+</div>
+    <br><br>
+
+    <button type="submit">Login</button>
+
+  <p class="signup-link">
+        Don't have an account?
+        <a href="signup.html">Signup</a>
+    </p>
+</form>
+<script>
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    try {
+
+        const response = await fetch("http://127.0.0.1:5000/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email,
+                password
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+
+            localStorage.setItem("email", email);
+
+            alert("Login Successful");
+
+            window.location.href = "index.html";
+
+        } else {
+
+            alert(data.message || "Invalid Email or Password");
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Server not running. Start Flask backend.");
+
+    }
+
+});
+</script>
+<script>
+const togglePass = document.getElementById("togglePass");
+const passwordField = document.getElementById("password");
+
+togglePass.addEventListener("click", () => {
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        togglePass.textContent = "🙈";
+    } else {
+        passwordField.type = "password";
+        togglePass.textContent = "👁️";
+    }
+});
+</script>
+
+<script src="login.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Plus Jakarta Sans',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#6366f1,#a855f7);
+    padding:20px;
+}
+
+.auth-container{
+    width:100%;
+    max-width:420px;
+}
+
+.auth-logo{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.auth-logo h2{
+    color:white;
+    font-size:32px;
+    font-weight:800;
+    margin-bottom:8px;
+}
+
+.auth-logo p{
+    color:#e5e7eb;
+}
+
+form{
+    background:white;
+    padding:35px;
+    border-radius:20px;
+    box-shadow:0 20px 40px rgba(0,0,0,.15);
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border:1px solid #d1d5db;
+    border-radius:12px;
+    font-size:15px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#6366f1;
+}
+
+.password-box{
+    position:relative;
+}
+
+.password-box input{
+    padding-right:45px;
+}
+
+#togglePass{
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform:translateY(-50%);
+    cursor:pointer;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#6366f1,#a855f7);
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+p{
+    text-align:center;
+    margin-top:20px;
+}
+
+a{
+    color:#6366f1;
+    text-decoration:none;
+    font-weight:700;
+}
