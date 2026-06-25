@@ -4,7 +4,7 @@ const email = localStorage.getItem("email");
 if (!email) {
     window.location.href = "login.html";
 }
-const API_URL = 'http://127.0.0.1:5000';
+const API_URL = fetch("https://ai-flash-generator.onrender.com/login");
 
 // Core State variables
 let flashcards = [];        // Master list of generated flashcards
